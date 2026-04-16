@@ -1,19 +1,24 @@
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
-import { useRouter, Stack } from 'expo-router';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, TextInput, Image } from "react-native";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { RootStackParamList } from '../assets/types/navigation';
+
+type LoginNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
 export default function Login() {
-    const router = useRouter();
+    const navigation = useNavigation<LoginNavigationProp>();
     const [email, setEmail] = useState('');
     const [senha, setSenha] = useState('');
 
     const handleLogin = () => {
         // Verifica se o e-mail tem '@' e(&&) a senha tem mais de 6 caracteres
         if (email.includes('@') && senha.length > 6) {
+            navigation.navigate('Dashboard', { userName: email, voluntarioId: 'ID-' + Math.random().toString() }); // enviando o nome capturado e um ID gerado aleatoriamente.
 
-            // Exibe no console que o acesso foi permitido
-            console.log("✅ Acesso autorizado para:", email);
+                // Exibe no console que o acesso foi permitido
+                console.log("✅ Acesso autorizado para:", email);
 
         } else {
             // Exibe no console que o login falhou por dados inválidos
@@ -21,30 +26,15 @@ export default function Login() {
         }
     };
 
-    const lidarComVoltar = () => {
-        if (router.canGoBack()) {
-            router.back();
-        } else {
-            router.replace('/');
-        }
-    };
-
     return (
-        <LinearGradient colors={['#00A5FF', '#003681ff']} style={styles.container}>
-            <Stack.Screen options={{ headerShown: false }} />
-
-            {/* --- TOPO: Logo e Botão de Voltar --- */}
+        <LinearGradient colors={['#003681ff', '#00A5FF', '#003681ff']} style={styles.container}>
             <View style={styles.headerContainer}>
-                <TouchableOpacity style={styles.buttonVoltar} onPress={lidarComVoltar}>
-                    <Text style={styles.buttonText}>Voltar</Text>
-                </TouchableOpacity>
-
                 <Image
                     source={require("../assets/images/logo.png")}
                     style={styles.logo}
+                    resizeMode="contain"
                 />
             </View>
-
             {/* --- CENTRO: Formulário --- */}
             <View style={styles.formulario}>
                 <Text style={styles.formTitle}>Faça seu login</Text>
@@ -69,7 +59,6 @@ export default function Login() {
                     secureTextEntry={true}
                 />
             </View>
-
             {/* --- BASE: Botão de Ação --- */}
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.buttonEntrar} onPress={handleLogin}>
@@ -105,7 +94,6 @@ const styles = StyleSheet.create({
     logo: {
         width: 250,
         height: 100,
-        resizeMode: 'contain',
         marginTop: 40, // Espaço para não bater no botão voltar
     },
     formulario: {
@@ -114,10 +102,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         width: '85%',
         elevation: 5,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
+        boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.12)',
     },
     formTitle: {
         fontSize: 22,
