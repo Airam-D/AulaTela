@@ -1,4 +1,5 @@
 // Importações
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -37,7 +38,7 @@ export default function Apresentacao() {
                 <Image
                     source={require("../assets/images/logo.png")}
                     style={styles.logo}
-                    resizeMode="contain"
+                    resizeMode="cover"
                 />
                 <Text style={styles.text}>
                     Transformando vidas através da tecnologia

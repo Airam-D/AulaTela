@@ -1,10 +1,9 @@
-import React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import { RootStackParamList } from '../assets/types/navigation';
-import Login from './login';
 import Apresentacao from './apresentacao';
-import Dashboard from './Dashboard';
+import Login from './login';
+import TabNavigator from './TabNavigator';
 
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -28,7 +27,7 @@ export default function App() {
       />
       <Stack.Screen
         name="Dashboard"
-        component={Dashboard}
+        component={TabNavigator}
         options={{ title: 'Dashboard Principal' }}
       />
 

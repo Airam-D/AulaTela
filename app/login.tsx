@@ -1,11 +1,12 @@
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View, Dimensions } from "react-native";
 import { RootStackParamList } from '../assets/types/navigation';
 
 type LoginNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
+
+const { width } = Dimensions.get('window');
 
 export default function Login() {
     const navigation = useNavigation<LoginNavigationProp>();
@@ -13,137 +14,150 @@ export default function Login() {
     const [senha, setSenha] = useState('');
 
     const handleLogin = () => {
-        // Verifica se o e-mail tem '@' e(&&) a senha tem mais de 6 caracteres
         if (email.includes('@') && senha.length > 6) {
-            navigation.navigate('Dashboard', { userName: email, voluntarioId: 'ID-' + Math.random().toString() }); // enviando o nome capturado e um ID gerado aleatoriamente.
-
-                // Exibe no console que o acesso foi permitido
-                console.log("✅ Acesso autorizado para:", email);
-
+            navigation.navigate('Dashboard', { userName: email, voluntarioId: 'ID-' + Math.random().toString() });
+            console.log("✅ Acesso autorizado");
         } else {
-            // Exibe no console que o login falhou por dados inválidos
-            console.log("❌ Falha no login: E-mail inválido ou senha muito curta.");
+            console.log("❌ Falha no login");
         }
     };
 
     return (
-        <LinearGradient colors={['#003681ff', '#00A5FF', '#003681ff']} style={styles.container}>
-            <View style={styles.headerContainer}>
-                <Image
-                    source={require("../assets/images/logo.png")}
-                    style={styles.logo}
-                    resizeMode="contain"
-                />
-            </View>
-            {/* --- CENTRO: Formulário --- */}
-            <View style={styles.formulario}>
-                <Text style={styles.formTitle}>Faça seu login</Text>
-                {email.length > 0 && (
-                    <Text style={styles.feedbackTexto}>
-                        Logando como: <Text style={{ fontWeight: 'bold' }}>{email}</Text>
-                    </Text>
-                )}
-                <TextInput
-                    style={styles.input}
-                    placeholder="Digite seu e-mail"
-                    value={email}
-                    onChangeText={setEmail}
-                    autoCapitalize="none"
-                    keyboardType="email-address"
-                />
-                <TextInput
-                    style={styles.input}
-                    placeholder="Digite sua Senha"
-                    value={senha}
-                    onChangeText={setSenha}
-                    secureTextEntry={true}
-                />
-            </View>
-            {/* --- BASE: Botão de Ação --- */}
-            <View style={styles.footer}>
-                <TouchableOpacity style={styles.buttonEntrar} onPress={handleLogin}>
-                    <Text style={styles.buttonTextEntrar}>Entrar</Text>
-                </TouchableOpacity>
-            </View>
+        <View style={styles.background}>
+            <View style={styles.card}>
+                {/* LADO ESQUERDO: Branding (Escondido em telas muito pequenas se necessário) */}
+                <View style={styles.brandSide}>
+                    <Image
+                        source={require("../assets/images/logo.png")}
+                        style={styles.logo}
+                        resizeMode="cover"
+                    />
+                    <Text style={styles.welcomeText}>Bem-vindo à{"\n"}<Text style={styles.brandName}>Abraço Global</Text></Text>
+                    <Text style={styles.subText}>Sua ajuda faz a diferença no mundo.</Text>
+                </View>
 
-        </LinearGradient>
+                {/* LADO DIREITO: Formulário */}
+                <View style={styles.formSide}>
+                    <Text style={styles.formTitle}>Login</Text>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>E-mail</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="nome@email.com"
+                            value={email}
+                            onChangeText={setEmail}
+                            autoCapitalize="none"
+                        />
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Senha</Text>
+                        <TextInput
+                            style={styles.input}
+                            placeholder="........"
+                            value={senha}
+                            onChangeText={setSenha}
+                            secureTextEntry={true}
+                        />
+                    </View>
+
+                    <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                        <Text style={styles.buttonText}>Acessar Painel</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    background: {
         flex: 1,
-        alignItems: "center",
-        justifyContent: "space-between", // Distribui Topo, Centro e Base
-        paddingVertical: 50, // Espaçamento para não colar nas bordas da tela
-    },
-    headerContainer: {
+        backgroundColor: '#0a252e', // Azul bem escuro como no exemplo
         alignItems: 'center',
-        width: '100%',
+        justifyContent: 'center',
     },
-    buttonVoltar: {
-        position: 'absolute',
-        top: 0,
-        left: 20,
-        backgroundColor: '#00d4ff',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+    card: {
+        flexDirection: width > 600 ? 'row' : 'column', // Fica horizontal no PC e vertical no Celular
+        backgroundColor: '#fff',
+        width: width > 900 ? '60%' : '90%',
+        maxWidth: 1000,
+        height: 500,
         borderRadius: 20,
-        zIndex: 10,
+        overflow: 'hidden', // Garante que o fundo do lado esquerdo respeite o arredondamento
+        elevation: 10,
+    },
+    brandSide: {
+        flex: 1,
+        backgroundColor: '#12313b', // Tom levemente diferente para o lado da logo
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 40,
+    },
+    formSide: {
+        flex: 1,
+        padding: 40,
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
     },
     logo: {
-        width: 250,
-        height: 100,
-        marginTop: 40, // Espaço para não bater no botão voltar
+        width: 120,
+        height: 120,
+        marginBottom: 20,
     },
-    formulario: {
-        backgroundColor: '#fff',
-        padding: 25,
-        borderRadius: 15,
-        width: '85%',
-        elevation: 5,
-        boxShadow: '0px 2px 10px rgba(0, 0, 0, 0.12)',
+    welcomeText: {
+        color: '#fff',
+        fontSize: 24,
+        textAlign: 'center',
+        lineHeight: 30,
+    },
+    brandName: {
+        color: '#00d4ff', // Cor de destaque
+        fontWeight: 'bold',
+        fontSize: 28,
+    },
+    subText: {
+        color: '#ccc',
+        marginTop: 10,
+        textAlign: 'center',
     },
     formTitle: {
-        fontSize: 22,
+        fontSize: 32,
         fontWeight: 'bold',
+        color: '#12313b',
+        marginBottom: 30,
+        borderBottomWidth: 3,
+        borderBottomColor: '#00d4ff',
+        alignSelf: 'flex-start',
+    },
+    inputGroup: {
         marginBottom: 20,
-        color: '#333',
-        textAlign: 'center',
+    },
+    label: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#12313b',
+        marginBottom: 8,
     },
     input: {
-        borderBottomWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 20,
-        padding: 10,
-        fontSize: 16,
-    },
-    footer: {
-        width: '100%',
-        alignItems: 'center',
-    },
-    buttonEntrar: {
-        backgroundColor: '#00d4ff',
-        paddingVertical: 15,
-        paddingHorizontal: 80,
+        borderWidth: 1,
+        borderColor: '#eee',
         borderRadius: 10,
+        padding: 15,
+        fontSize: 16,
+        backgroundColor: '#f9f9f9',
     },
-    buttonTextEntrar: {
-        color: '#003681',
-        fontWeight: 'bold',
-        fontSize: 18,
+    button: {
+        backgroundColor: '#003681', // Cor do botão inspirada no seu tema original
+        paddingVertical: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginTop: 10,
     },
     buttonText: {
-        color: '#003681',
+        color: '#fff',
         fontWeight: 'bold',
-    },
-    feedbackTexto: {
-        fontSize: 12,
-        color: '#666',
-        marginBottom: 10,
-        backgroundColor: '#f0f0f0',
-        padding: 5,
-        borderRadius: 5,
-        textAlign: 'center',
+        fontSize: 18,
     },
 });
